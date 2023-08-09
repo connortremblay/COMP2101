@@ -59,15 +59,11 @@ function Get-DiskInfo {
     $diskInfo | ForEach-Object {
         $partitions = Get-WmiObject -Query "ASSOCIATORS OF {Win32_DiskDrive.DeviceID='$($_.DeviceID)'} WHERE AssocClass=Win32_DiskDriveToDiskPartition"
         $totalSize = $_.Size
-        $freeSpace = $partitions | ForEach-Object { $_.Size - $_.TotalSize }
-        $percentageFree = ($freeSpace / $totalSize) * 100
 
         $diskTable += [PSCustomObject]@{
             Vendor = $_.Manufacturer
             Model = $_.Model
             Size = "$([math]::Round($_.Size / 1GB, 2)) GB"
-            FreeSpace = "$([math]::Round($freeSpace / 1GB, 2)) GB"
-            PercentageFree = "$([math]::Round($percentageFree, 2))%"
         }
     }
 
